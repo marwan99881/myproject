@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  web:
+    image: dockerfile2
+    container_name: web 
+    build:
+      context: ./frontend
+    ports:
+      - 80:3000
+    environment:
+      - API_URL=http://api:3001/data
+    networks:
+      - hello_network_puplic
+    depends_on:
+      - api
+    links:
+      - "hello-db:database"
+
+  api:
+    container_name: api
+    build:
+      context: ./backend
+    environment:
+      - CONNECTION_STRING=postgresql://postgres:password@hello-db:5432/coding_dojo
+    networks:
+      - hello_network_puplic
+      - hello-database-network
+    depends_on:
+      - hello-db
+
+  hello-db:
+    image: postgres:11.2-alpine
+    container_name: hello-db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=coding_dojo
+    volumes:
+      - hello-database:/var/lib/postgresql/data
+      - hello-database-config:/etc/postgresql
+      - ./sql_scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hello-database-network
+
+volumes:
+  hello-database:
+  hello-database-config:
+
+networks:
+  hello-database-network:
+    name: hello-database-network #private
+    driver: bridge
+
+  hello_network_puplic:
+    name:  hello_network_puplic  #puplic
+    driver: bridge
