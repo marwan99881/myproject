@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI for docker beltproject
+name: CI for docker projectbelt
 
 # Controls when the workflow will run
 on:
@@ -31,7 +31,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, beltproject!
+        run: echo Hello, projectbelt!
 
       # Building
       - name: Set up Docker Buildx
@@ -44,9 +44,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./
-          file:  ./frontend/Dockerfile
+          file:  ./frontend/dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/beltproject:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/projectbelt:latest
 
       # Runs a set of commands using the runners shell
       - name: Image digest
